@@ -1,10 +1,21 @@
 <!doctype html>
 <html lang="ko">
 <head>
+  
+  <!--     한글이 깨지지 않도록 문자 방식을 UTF-8로 설정합니 -->
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>다운로드 페이지</title>
 
+  <!-- * 스마트폰에서도 화면 너비가 알맞게 보이도록 합니다.
+* width=device-width → 기기의 화면 너비에 맞춤
+* initial-scale=1 → 처음 확대 배율을 100%로 설정 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>다운로드 페이지</title>
+<!--     인터넷에서 **부트스트랩 디자인 파일(CSS)**을 불러옵니다.
+* 부트스트랩은 버튼, 글자, 여백 등을 보기 좋게 만들어주는 디자인 도구입니다.
+* href → 디자인 파일의 인터넷 주소
+* rel="stylesheet" → “이 파일은 디자인용 CSS입니다”라는 뜻
+* 인터넷이 끊기면 부트스트랩 디자인이 적용되지 않을 수 있습니다. -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
         rel="stylesheet">
 </head>
@@ -14,7 +25,7 @@
     <h1 class="mb-3">자료 다운로드!!!자료 다운로드!!!</h1>
     <p class="text-secondary">아래 버튼을 눌러 파일을 받으세요.</p>
 
-    <a href="sample.zip" class="btn btn-primary btn-lg" download>
+    <a href="cjysample.zip" class="btn btn-primary btn-lg" download>
       파일 다운로드
     </a>
   </div>
