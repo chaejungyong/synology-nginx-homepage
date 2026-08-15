@@ -29,6 +29,21 @@
     <a href="cjysample.zip" class="btn btn-primary btn-lg" download>
       파일 다운로드
     </a>
+
+    <!-- 다크모드 버튼 -->
+<div class="mt-4">
+  <button class="btn btn-outline-dark" onclick="toggleDarkMode()">🌙 모드 변경</button>
+</div>
+
+<script>
+function toggleDarkMode() {
+  document.body.classList.toggle('bg-dark');
+  document.body.classList.toggle('text-white');
+  document.body.classList.toggle('bg-light');
+}
+</script>
+<!-- 다크모드 버튼 종료 -->
+
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js">
