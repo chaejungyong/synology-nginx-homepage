@@ -44,21 +44,15 @@ function toggleDarkMode() {
 </script>
 <!-- 다크모드 버튼 종료 -->
 
-<!-- 카운터 기능 -->
-<div class="mt-3">
-  <span class="badge bg-secondary fs-6">총 다운로드 횟수: <span id="count">0</span>회</span>
+<!-- 검색창 -->
+<div class="row justify-content-center mt-4">
+  <div class="col-md-6">
+    <div class="input-group">
+      <input type="text" class="form-control" placeholder="찾으실 자료명을 입력하세요...">
+      <button class="btn btn-outline-primary" type="button">검색</button>
+    </div>
+  </div>
 </div>
-
-<!-- 기존 '파일 다운로드' 버튼에 onclick="increaseCount()" 추가 -->
-<!-- 예시: <a href="sample.zip" onclick="increaseCount()" class="btn btn-primary ...">파일 다운로드</a> -->
-
-<script>
-let count = 0;
-function increaseCount() {
-  count++;
-  document.getElementById('count').innerText = count;
-}
-</script>
 
 
   </div>
