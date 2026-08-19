@@ -130,6 +130,7 @@
             // 폼 제출 시 페이지가 새로고침되는 기본 동작을 막습니다
             e.preventDefault();
 
+<<<<<<< HEAD
             // 오늘 날짜와 시간을 YYYY-MM-DD HH:MM 형식으로 만듭니다
             const now = new Date();
             const dateString = now.getFullYear() + '-' + 
@@ -137,6 +138,13 @@
                                String(now.getDate()).padStart(2, '0') + ' ' + 
                                String(now.getHours()).padStart(2, '0') + ':' + 
                                String(now.getMinutes()).padStart(2, '0');
+=======
+<!-- 안내 알림창 -->
+<div class="alert alert-info alert-dismissible fade show text-start mt-3" role="alert">
+  <strong>📢 안내사항:</strong> 신규 자료가 업데이트되었습니다. 대용량 파일은 Wi-Fi 환경에서 다운로드하세요.
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+>>>>>>> 0f4e169a48c2e8e6ab3184fea82b14c98baa7b65
 
             // 입력 필드들의 값을 읽어와 하나의 객체(Object)로 모읍니다
             const chartData = {
