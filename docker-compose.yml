@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  # 1. 데이터베이스 (MariaDB)
+  emr-db:
+    image: mariadb:latest
+    container_name: emr-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: mariadbpassword
+      MYSQL_DATABASE: emr_db
+    volumes:
+      - ./db_data:/var/lib/mysql
+
+  # 2. 파이썬 백엔드 (Flask)
+  emr-backend:
+    image: python:3.10-slim
+    container_name: emr-backend
+    restart: always
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: sh -c "pip install flask flask-cors pymysql && python app.py"
+    ports:
+      - "5000:5000"
+    depends_on:
+      - emr-db
+
+  # 3. 프론트엔드 웹서버 (Nginx)
+  emr-web:
+    image: nginx:alpine
+    container_name: emr-web
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/usr/share/nginx/html
+    depends_on:
+      - emr-backend

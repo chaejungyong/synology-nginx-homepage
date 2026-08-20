@@ -3,165 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>동물병원 EMR 차트 시스템</title>
+    <title>동물병원 간단 EMR 시스템</title>
     <style>
-        body { font-family: sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; margin-top: 0; }
-        .grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 20px; margin-top: 20px; }
-        .card { background: #fafafa; padding: 15px; border-radius: 8px; border: 1px solid #eee; }
-        .card h2 { margin-top: 0; font-size: 1.1rem; color: #34495e; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
-        label { display: block; margin-top: 10px; font-weight: bold; font-size: 0.85rem; color: #555; }
-        input[type="text"], input[type="number"], select, textarea { width: 100%; padding: 8px; margin-top: 4px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
-        textarea { height: 70px; resize: vertical; }
-        button { width: 100%; background-color: #3498db; color: white; border: none; padding: 10px; margin-top: 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .main-layout { display: flex; gap: 20px; }
+        .form-section { flex: 1; background: #f9f9f9; padding: 20px; border-radius: 6px; }
+        .list-section { flex: 1.5; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background-color: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
         button:hover { background-color: #2980b9; }
-        .btn-danger { background-color: #e74c3c; width: auto; padding: 5px 10px; margin-top: 0; font-size: 0.8rem; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         th { background-color: #f2f2f2; }
-        .chart-note { white-space: pre-wrap; background: #fff; padding: 5px; border-radius: 3px; border: 1px solid #f0f0f0; }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <h1>🐾 동물병원 간단 EMR 시스템</h1>
-
-        <div class="grid">
-            <div class="card">
+        <h1>동물병원 간단 EMR 시스템</h1>
+        <div class="main-layout">
+            <!-- 좌측: 신규 진료 기록 작성 -->
+            <div class="form-section">
                 <h2>신규 진료 기록 작성</h2>
-                <form id="emrForm">
-                    <label for="petName">환자 이름 (동물명)</label>
-                    <input type="text" id="petName" placeholder="예: 뽀삐" required>
-
-                    <label for="species">축종</label>
+                <div class="form-group">
+                    <label>환자 이름 (동물명)</label>
+                    <input type="text" id="petName" placeholder="예: 뽀삐">
+                </div>
+                <div class="form-group">
+                    <label>축종</label>
                     <select id="species">
-                        <option value="개">개 (Canine)</option>
-                        <option value="고양이">고양이 (Feline)</option>
-                        <option value="토끼">토끼 (Rabbit)</option>
+                        <option value="개 (Canine)">개 (Canine)</option>
+                        <option value="고양이 (Feline)">고양이 (Feline)</option>
                         <option value="기타">기타</option>
                     </select>
-
-                    <label for="age">나이 (살)</label>
-                    <input type="number" id="age" placeholder="예: 3" required>
-
-                    <label for="weight">체중 (kg)</label>
-                    <input type="text" id="weight" placeholder="예: 4.5" required>
-
-                    <label for="owner">보호자 성함 / 연락처</label>
-                    <input type="text" id="owner" placeholder="홍길동 (010-0000-0000)" required>
-
-                    <label for="diagnosis">진료 및 처방 내용 (SOAP)</label>
-                    <textarea id="diagnosis" placeholder="주소(CC), 처방 내용 등 입력" required></textarea>
-
-                    <button type="submit">차트 저장하기</button>
-                </form>
+                </div>
+                <div class="form-group">
+                    <label>나이 (살)</label>
+                    <input type="text" id="age" placeholder="예: 3">
+                </div>
+                <div class="form-group">
+                    <label>체중 (kg)</label>
+                    <input type="text" id="weight" placeholder="예: 4.5">
+                </div>
+                <div class="form-group">
+                    <label>보호자 성함 / 연락처</label>
+                    <input type="text" id="ownerInfo" placeholder="홍길동 (010-0000-0000)">
+                </div>
+                <div class="form-group">
+                    <label>진료 및 처방 내용 (SOAP)</label>
+                    <textarea id="record" rows="4" placeholder="주소(CC), 처방 내용 등 입력"></textarea>
+                </div>
+                <button type="button" onclick="saveChart()">차트 저장하기</button>
             </div>
 
-            <div class="card">
+            <!-- 우측: 차트 검색 및 조회 -->
+            <div class="list-section">
                 <h2>차트 검색 및 조회</h2>
-                <input type="text" id="searchInput" placeholder="환자 이름, 보호자, 내용 검색..." onkeyup="searchChart()">
-
-                <table id="chartTable">
+                <input type="text" id="searchInput" placeholder="환자 이름, 보호자, 내용 검색..." onkeyup="filterCharts()">
+                <table>
                     <thead>
                         <tr>
                             <th>날짜</th>
                             <th>환자(축종)</th>
                             <th>체중</th>
                             <th>진료 기록</th>
-                            <th>관리</th>
+                            <th>보호자</th>
                         </tr>
                     </thead>
-                    <tbody id="chartList"></tbody>
+                    <tbody id="chartTableBody">
+                        <tr><td colspan="5" style="text-align:center;">등록된 진료 기록이 없습니다.</td></tr>
+                    </tbody>
                 </table>
             </div>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', loadCharts);
+        // 백엔드 파이썬 API 서버 주소 (HTTPS 접속 환경에 맞춰 설정)
+       const API_URL = 'http://crosssoldierweb.synology.me:5050/api/charts';
+        // 1. 차트 목록 불러오기 함수 (GET)
+        async function loadCharts(keyword = '') {
+            try {
+                const res = await fetch(`${API_URL}?search=${encodeURIComponent(keyword)}`);
+                const data = await res.json();
+                
+                const tableBody = document.getElementById('chartTableBody');
+                tableBody.innerHTML = '';
 
-        document.getElementById('emrForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+                if (data.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">등록된 진료 기록이 없습니다.</td></tr>';
+                    return;
+                }
 
-            const now = new Date();
-            const dateString = now.getFullYear() + '-' + 
-                               String(now.getMonth() + 1).padStart(2, '0') + '-' + 
-                               String(now.getDate()).padStart(2, '0') + ' ' + 
-                               String(now.getHours()).padStart(2, '0') + ':' + 
-                               String(now.getMinutes()).padStart(2, '0');
+                data.forEach(item => {
+                    const dateStr = item.created_at ? item.created_at.substring(0, 10) : '';
+                    const row = `
+                        <tr>
+                            <td>${dateStr}</td>
+                            <td><b>${item.pet_name}</b><br><small>(${item.species} / ${item.age}살)</small></td>
+                            <td>${item.weight} kg</td>
+                            <td>${item.record}</td>
+                            <td>${item.owner_info}</td>
+                        </tr>
+                    `;
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                });
+            } catch (err) {
+                console.error("데이터 로드 실패:", err);
+            }
+        }
 
-            const chartData = {
-                id: Date.now(),
-                date: dateString,
-                petName: document.getElementById('petName').value,
-                species: document.getElementById('species').value,
-                age: document.getElementById('age').value,
-                weight: document.getElementById('weight').value,
-                owner: document.getElementById('owner').value,
-                diagnosis: document.getElementById('diagnosis').value
-            };
+        // 2. 신규 차트 DB에 저장하기 (POST)
+        async function saveChart() {
+            const petName = document.getElementById('petName').value;
+            const record = document.getElementById('record').value;
 
-            let charts = JSON.parse(localStorage.getItem('emr_charts')) || [];
-            charts.unshift(chartData);
-            localStorage.setItem('emr_charts', JSON.stringify(charts));
-
-            document.getElementById('emrForm').reset();
-            loadCharts();
-        });
-
-        function loadCharts() {
-            const charts = JSON.parse(localStorage.getItem('emr_charts')) || [];
-            const chartList = document.getElementById('chartList');
-            chartList.innerHTML = '';
-
-            if (charts.length === 0) {
-                chartList.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#888;">등록된 진료 기록이 없습니다.</td></tr>';
+            if (!petName || !record) {
+                alert('환자 이름과 진료 내용은 필수 입력 사항입니다.');
                 return;
             }
 
-            charts.forEach(function(chart) {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td><small>${chart.date}</small></td>
-                    <td><strong>${chart.petName}</strong><br><small>(${chart.species} / ${chart.age}살)</small></td>
-                    <td>${chart.weight} kg</td>
-                    <td>
-                        <div class="chart-note">${chart.diagnosis}</div>
-                        <small style="color:#777;">보호자: ${chart.owner}</small>
-                    </td>
-                    <td>
-                        <button class="btn-danger" onclick="deleteChart(${chart.id})">삭제</button>
-                    </td>
-                `;
-                chartList.appendChild(row);
-            });
-        }
+            const payload = {
+                pet_name: petName,
+                species: document.getElementById('species').value,
+                age: document.getElementById('age').value,
+                weight: document.getElementById('weight').value,
+                owner_info: document.getElementById('ownerInfo').value,
+                record: record
+            };
 
-        function deleteChart(id) {
-            if (confirm('이 차트 기록을 삭제하시겠습니까?')) {
-                let charts = JSON.parse(localStorage.getItem('emr_charts')) || [];
-                charts = charts.filter(chart => chart.id !== id);
-                localStorage.setItem('emr_charts', JSON.stringify(charts));
-                loadCharts();
-            }
-        }
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
 
-        function searchChart() {
-            const filter = document.getElementById('searchInput').value.toUpperCase();
-            const table = document.getElementById('chartTable');
-            const tr = table.getElementsByTagName('tr');
-
-            for (let i = 1; i < tr.length; i++) {
-                const rowText = tr[i].textContent || tr[i].innerText;
-                if (rowText.toUpperCase().indexOf(filter) > -1) {
-                    tr[i].style.display = '';
-                } else {
-                    tr[i].style.display = 'none';
+                if (res.ok) {
+                    alert('DB에 성공적으로 저장되었습니다!');
+                    // 입력창 초기화
+                    document.getElementById('petName').value = '';
+                    document.getElementById('age').value = '';
+                    document.getElementById('weight').value = '';
+                    document.getElementById('ownerInfo').value = '';
+                    document.getElementById('record').value = '';
+                    
+                    loadCharts(); // 목록 새로고침
                 }
+            } catch (err) {
+                console.error("저장 실패:", err);
+                alert("저장 중 오류가 발생했습니다.");
             }
         }
+
+        // 3. 검색창 입력 시 실시간 검색
+        function filterCharts() {
+            const keyword = document.getElementById('searchInput').value;
+            loadCharts(keyword);
+        }
+
+        // 페이지 진입 시 자동 로드
+        window.onload = () => loadCharts();
     </script>
 </body>
 </html>
