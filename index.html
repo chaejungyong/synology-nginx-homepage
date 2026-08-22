@@ -5,177 +5,125 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>동물병원 EMR 차트 관리</title>
     <style>
-        * { box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 15px; max-width: 800px; margin: auto; background-color: #f8f9fa; }
-        h2 { text-align: center; color: #333; margin-bottom: 20px; }
-        .input-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 20px; }
-        .input-field { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ced4da; border-radius: 6px; font-size: 15px; }
-        .btn-group { display: flex; gap: 8px; }
-        button { flex: 1; padding: 12px; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; }
-        .btn-save { background-color: #0d6efd; color: white; }
-        .btn-cancel { background-color: #6c757d; color: white; display: none; }
+        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f4f6f9; margin: 0; padding: 40px; }
+        .container { max-width: 650px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #333; margin-bottom: 25px; }
+        .form-group { margin-bottom: 15px; }
+        input[type="text"], textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
+        textarea { height: 80px; resize: none; }
+        button.btn-submit { width: 100%; padding: 12px; background-color: #003399; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        button.btn-submit:hover { background-color: #002266; }
         
-        .table-container { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th, td { padding: 14px 12px; border-bottom: 1px solid #dee2e6; }
-        th { background-color: #e9ecef; color: #495057; font-size: 14px; text-align: center; }
-        td { font-size: 14px; }
-        .td-center { text-align: center; }
-        .btn-action { padding: 6px 10px; font-size: 13px; border-radius: 4px; margin: 2px; flex: none; width: auto; }
-        .btn-edit { background-color: #ffc107; color: #212529; }
-        .btn-del { background-color: #dc3545; color: white; }
+        .search-box { margin-top: 25px; margin-bottom: 15px; display: flex; gap: 8px; }
+        .search-box input { flex: 1; }
+        .search-box button { padding: 0 16px; background-color: #555; color: white; border: none; border-radius: 6px; cursor: pointer; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px; text-align: center; border-bottom: 1px solid #eee; font-size: 14px; }
+        th { background-color: #f8f9fa; color: #555; }
+        .btn-del { background-color: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
     </style>
 </head>
 <body>
 
+<div class="container">
     <h2>🏥 동물병원 EMR 차트 관리</h2>
+    
+    <div class="form-group">
+        <input type="text" id="patientName" placeholder="환자명 (예: 뽀삐, 야옹이)">
+    </div>
+    <div class="form-group">
+        <textarea id="diagnosis" placeholder="진단 내용 및 처방 메모"></textarea>
+    </div>
+    <button class="btn-submit" onclick="addRecord()">차트 등록</button>
 
-    <!-- 입력 및 수정 폼 -->
-    <div class="input-card">
-        <input type="hidden" id="record-id">
-        <input type="text" id="patient-name" class="input-field" placeholder="환자명 (예: 뽀삐, 야옹이)">
-        <input type="text" id="diagnosis" class="input-field" placeholder="진단 내용 및 처방 메모">
-        <div class="btn-group">
-            <button id="save-btn" class="btn-save" onclick="saveRecord()">차트 등록</button>
-            <button id="cancel-btn" class="btn-cancel" onclick="resetForm()">취소</button>
-        </div>
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="검색할 환자명 입력" onkeyup="if(window.event.keyCode==13){fetchRecords()}">
+        <button onclick="fetchRecords()">검색</button>
+        <button onclick="clearSearch()" style="background-color: #888;">전체보기</button>
     </div>
 
-    <!-- 차트 목록 -->
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th style="width: 12%;">NO</th>
-                    <th style="width: 23%;">환자명</th>
-                    <th style="width: 45%;">진단내용</th>
-                    <th style="width: 20%;">관리</th>
-                </tr>
-            </thead>
-            <tbody id="chart-list">
-                <tr><td colspan="4" class="td-center">데이터를 불러오는 중입니다...</td></tr>
-            </tbody>
-        </table>
-    </div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 15%;">NO</th>
+                <th style="width: 25%;">환자명</th>
+                <th style="width: 45%;">진단내용</th>
+                <th style="width: 15%;">관리</th>
+            </tr>
+        </thead>
+        <tbody id="recordTable">
+            <tr><td colspan="4">데이터 로딩 중...</td></tr>
+        </tbody>
+    </table>
+</div>
 
-    <script>
-        const API_URL = '/api/records';
+<script>
+    const API_BASE = '/api/records';
 
-        // 1. Read (조회)
-        async function loadRecords() {
-            try {
-                const res = await fetch(API_URL);
-                const data = await res.json();
-                const list = document.getElementById('chart-list');
-                list.innerHTML = '';
+    async function fetchRecords() {
+        const search = document.getElementById('searchInput').value.trim();
+        const url = search ? `${API_BASE}?search=${encodeURIComponent(search)}` : API_BASE;
+        
+        try {
+            const res = await fetch(url);
+            const data = await res.json();
+            const tbody = document.getElementById('recordTable');
+            tbody.innerHTML = '';
 
-                if (!data || data.length === 0) {
-                    list.innerHTML = '<tr><td colspan="4" class="td-center">등록된 진료 기록이 없습니다.</td></tr>';
-                    return;
-                }
-
-                data.forEach(item => {
-                    list.innerHTML += `
-                        <tr>
-                            <td class="td-center">${item.id}</td>
-                            <td><strong>${escapeHtml(item.patient_name)}</strong></td>
-                            <td>${escapeHtml(item.diagnosis)}</td>
-                            <td class="td-center">
-                                <button class="btn-action btn-edit" onclick="startEdit(${item.id}, '${escapeQuote(item.patient_name)}', '${escapeQuote(item.diagnosis)}')">수정</button>
-                                <button class="btn-action btn-del" onclick="deleteRecord(${item.id})">삭제</button>
-                            </td>
-                        </tr>`;
-                });
-            } catch (err) {
-                console.error("데이터 로드 실패:", err);
-                document.getElementById('chart-list').innerHTML = '<tr><td colspan="4" class="td-center" style="color:red;">데이터 로딩 실패 (백엔드 오류)</td></tr>';
-            }
-        }
-
-        // 2. Create / Update (생성 및 수정)
-        async function saveRecord() {
-            const id = document.getElementById('record-id').value;
-            const patient_name = document.getElementById('patient-name').value.trim();
-            const diagnosis = document.getElementById('diagnosis').value.trim();
-
-            if (!patient_name || !diagnosis) {
-                alert('환자명과 진단 내용을 모두 입력해주세요.');
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4">조회된 기록이 없습니다.</td></tr>';
                 return;
             }
 
-            const method = id ? 'PUT' : 'POST';
-            const url = id ? `${API_URL}/${id}` : API_URL;
+            data.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.id}</td>
+                    <td><strong>${row.patient_name}</strong></td>
+                    <td style="text-align: left;">${row.diagnosis}</td>
+                    <td><button class="btn-del" onclick="deleteRecord(${row.id})">삭제</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } catch (e) {
+            console.error(e);
+        }
+    }
 
-            try {
-                const res = await fetch(url, {
-                    method: method,
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ patient_name, diagnosis })
-                });
+    function clearSearch() {
+        document.getElementById('searchInput').value = '';
+        fetchRecords();
+    }
 
-                if (res.ok) {
-                    resetForm();
-                    loadRecords();
-                } else {
-                    alert('저장에 실패했습니다.');
-                }
-            } catch (err) {
-                alert('서버 통신 오류가 발생했습니다.');
-            }
+    async function addRecord() {
+        const patientName = document.getElementById('patientName').value.trim();
+        const diagnosis = document.getElementById('diagnosis').value.trim();
+
+        if (!patientName || !diagnosis) {
+            alert('환자명과 진단내용을 입력해주세요.');
+            return;
         }
 
-        // 3. Delete (삭제)
-        async function deleteRecord(id) {
-            if (!confirm(`[No.${id}] 진료 기록을 정말 삭제하시겠습니까?`)) return;
+        await fetch(API_BASE, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ patient_name: patientName, diagnosis: diagnosis })
+        });
 
-            try {
-                const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-                if (res.ok) {
-                    loadRecords();
-                } else {
-                    alert('삭제에 실패했습니다.');
-                }
-            } catch (err) {
-                alert('서버 통신 오류가 발생했습니다.');
-            }
-        }
+        document.getElementById('patientName').value = '';
+        document.getElementById('diagnosis').value = '';
+        fetchRecords();
+    }
 
-        // 수정 모드 전환
-        function startEdit(id, name, diag) {
-            document.getElementById('record-id').value = id;
-            document.getElementById('patient-name').value = name;
-            document.getElementById('diagnosis').value = diag;
-            
-            const saveBtn = document.getElementById('save-btn');
-            saveBtn.innerText = '수정 완료';
-            saveBtn.style.backgroundColor = '#28a745';
-            
-            document.getElementById('cancel-btn').style.display = 'block';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+    async function deleteRecord(id) {
+        if (!confirm('정말 삭제하시겠습니까?')) return;
+        await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
+        fetchRecords();
+    }
 
-        // 폼 초기화
-        function resetForm() {
-            document.getElementById('record-id').value = '';
-            document.getElementById('patient-name').value = '';
-            document.getElementById('diagnosis').value = '';
-            
-            const saveBtn = document.getElementById('save-btn');
-            saveBtn.innerText = '차트 등록';
-            saveBtn.style.backgroundColor = '#0d6efd';
-            
-            document.getElementById('cancel-btn').style.display = 'none';
-        }
+    fetchRecords();
+</script>
 
-        // 특수문자 탈출 (오류 방지)
-        function escapeHtml(text) {
-            return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        }
-        function escapeQuote(text) {
-            return String(text).replace(/'/g, "\\'").replace(/"/g, "&quot;");
-        }
-
-        window.onload = loadRecords;
-    </script>
 </body>
 </html>
