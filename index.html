@@ -21,7 +21,8 @@
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { padding: 12px; text-align: center; border-bottom: 1px solid #eee; font-size: 14px; }
         th { background-color: #f8f9fa; color: #555; }
-        .btn-del { background-color: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .btn-edit { background-color: #28a745; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; margin-right: 4px; }
+        .btn-del { background-color: #dc3545; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
     </style>
 </head>
 <body>
@@ -46,10 +47,10 @@
     <table>
         <thead>
             <tr>
-                <th style="width: 15%;">NO</th>
-                <th style="width: 25%;">환자명</th>
-                <th style="width: 45%;">진단내용</th>
-                <th style="width: 15%;">관리</th>
+                <th style="width: 12%;">NO</th>
+                <th style="width: 20%;">환자명</th>
+                <th style="width: 44%;">진단내용</th>
+                <th style="width: 24%;">관리</th>
             </tr>
         </thead>
         <tbody id="recordTable">
@@ -76,19 +77,26 @@
                 return;
             }
 
-            data.forEach((row, index) => {
+            data.forEach((row) => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${row.id}</td>
                     <td><strong>${row.patient_name}</strong></td>
                     <td style="text-align: left;">${row.diagnosis}</td>
-                    <td><button class="btn-del" onclick="deleteRecord(${row.id})">삭제</button></td>
+                    <td>
+                        <button class="btn-edit" onclick="updateRecord(${row.id}, '${escapeHtml(row.diagnosis)}')">수정</button>
+                        <button class="btn-del" onclick="deleteRecord(${row.id})">삭제</button>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
         } catch (e) {
             console.error(e);
         }
+    }
+
+    function escapeHtml(text) {
+        return text.replace(/'/g, "\\'").replace(/\n/g, ' ');
     }
 
     function clearSearch() {
@@ -113,6 +121,19 @@
 
         document.getElementById('patientName').value = '';
         document.getElementById('diagnosis').value = '';
+        fetchRecords();
+    }
+
+    async function updateRecord(id, currentDiagnosis) {
+        const newDiagnosis = prompt('새로운 진단내용을 입력하세요:', currentDiagnosis);
+        if (newDiagnosis === null || newDiagnosis.trim() === '') return;
+
+        await fetch(`${API_BASE}/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ diagnosis: newDiagnosis.trim() })
+        });
+
         fetchRecords();
     }
 

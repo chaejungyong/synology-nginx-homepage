@@ -82,6 +82,26 @@ def create_record():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/api/records/<int:id>', methods=['PUT'])
+def update_record(id):
+    try:
+        data = request.get_json(force=True, silent=True) or {}
+        diagnosis = data.get('diagnosis')
+
+        if not diagnosis:
+            return jsonify({"error": "수정할 진단내용이 누락되었습니다."}), 400
+
+        conn = get_db()
+        with conn.cursor() as cursor:
+            cursor.execute(
+                "UPDATE chart_records SET diagnosis=%s WHERE id=%s",
+                (diagnosis, id)
+            )
+        conn.close()
+        return jsonify({"status": "updated"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/api/records/<int:id>', methods=['DELETE'])
 def delete_record(id):
     try:
